@@ -134,7 +134,7 @@ export async function AppRoutes(server:FastifyInstance){
     // CRUD Unidades de medidas
 
     server.get('/unidadeMedida', async () => {        
-        const unidadeMedida = await prisma.tbUnidademedida.findMany()
+        const unidadeMedida = await prisma.tbUnidadeMedida.findMany()
     
         return unidadeMedida
     })
@@ -150,7 +150,7 @@ export async function AppRoutes(server:FastifyInstance){
             nomeunidade,
         } = postBody.parse(request.body)
     
-        const newUnidadeMedida = await prisma.tbUnidademedida.create({
+        const newUnidadeMedida = await prisma.tbUnidadeMedida.create({
             data: {
                 siglaun,
                 nomeunidade,
@@ -173,7 +173,7 @@ export async function AppRoutes(server:FastifyInstance){
             nomeunidade
         } = putBody.parse(request.body)
 
-        const unidadeMedidaUpdate = await prisma.tbUnidademedida.updateMany({
+        const unidadeMedidaUpdate = await prisma.tbUnidadeMedida.updateMany({
             where: {
                 idunidade: idunidade,
             },
@@ -193,7 +193,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { idunidade } = idParam.parse(request.params)
         const UnidadeMedidaID = Number(idunidade)
     
-        const unidadeMedidaDeleted = await prisma.tbUnidademedida.delete({
+        const unidadeMedidaDeleted = await prisma.tbUnidadeMedida.delete({
             where: {
                 idunidade: UnidadeMedidaID,
             },
@@ -207,7 +207,7 @@ export async function AppRoutes(server:FastifyInstance){
     // CRUD TIPOS DE PRODUTOS
 
     server.get('/tiposProdutos', async () => {        
-        const tiposProdutos = await prisma.tbTiposprodutos.findMany()
+        const tiposProdutos = await prisma.tbTiposProdutos.findMany()
     
         return tiposProdutos
     })
@@ -219,7 +219,7 @@ export async function AppRoutes(server:FastifyInstance){
     
         const {nometipprod} = bodyData.parse(request.body)
     
-        const newTipProd = await prisma.tbTiposprodutos.create({
+        const newTipProd = await prisma.tbTiposProdutos.create({
             data: {
                 nometipprod,
             },
@@ -236,7 +236,7 @@ export async function AppRoutes(server:FastifyInstance){
     
         const {idtipprod,nometipprod} = putBody.parse(request.body)
 
-        const tipoProdutoUpdate = await prisma.tbTiposprodutos.updateMany({
+        const tipoProdutoUpdate = await prisma.tbTiposProdutos.updateMany({
             where: {
                 idtipprod: idtipprod,
             },
@@ -255,7 +255,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { idtipprod } = idParam.parse(request.params)
         const tipProdId = Number(idtipprod)
     
-        const tipProdDeleted = await prisma.tbTiposprodutos.delete({
+        const tipProdDeleted = await prisma.tbTiposProdutos.delete({
             where: {
                 idtipprod: tipProdId,
             },
@@ -347,7 +347,7 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
 
         //Verifica se existe id de unidade
-        const confereIdUnidade = await prisma.tbUnidademedida.findUnique({
+        const confereIdUnidade = await prisma.tbUnidadeMedida.findUnique({
             where: { idunidade: idunidade },
           });
 
@@ -356,7 +356,7 @@ export async function AppRoutes(server:FastifyInstance){
         }
 
         //Verifica se existe id de tipo do produto
-        const confereIdTipoProd = await prisma.tbTiposprodutos.findUnique({
+        const confereIdTipoProd = await prisma.tbTiposProdutos.findUnique({
             where: { idtipprod: idtipprod },
           });
 
@@ -392,7 +392,7 @@ export async function AppRoutes(server:FastifyInstance){
                 quantminima} = putBody.parse(request.body)
 
         //Verifica se existe id de unidade
-        const confereIdUnidade = await prisma.tbUnidademedida.findUnique({
+        const confereIdUnidade = await prisma.tbUnidadeMedida.findUnique({
             where: { idunidade: idunidade },
           });
 
@@ -401,7 +401,7 @@ export async function AppRoutes(server:FastifyInstance){
         }
 
         //Verifica se existe id de tipo do produto
-        const confereIdTipoProd = await prisma.tbTiposprodutos.findUnique({
+        const confereIdTipoProd = await prisma.tbTiposProdutos.findUnique({
             where: { idtipprod: idtipprod },
           });
 
@@ -512,6 +512,8 @@ export async function AppRoutes(server:FastifyInstance){
     
         server.post('/estoque/add', async (request) => {
             const putBody = z.object({
+                idmovimento: z.number(),
+                seqitem: z.number(),
                 idlocal: z.number(),
                 idproduto: z.number(),
                 quantidade: z.number(),
@@ -519,6 +521,8 @@ export async function AppRoutes(server:FastifyInstance){
             })
     
             const {
+                idmovimento,
+                seqitem,
                 idlocal,
                 idproduto,
                 quantidade,
@@ -545,6 +549,8 @@ export async function AppRoutes(server:FastifyInstance){
     
             const newEntry = await prisma.tbEstoque.create({
                 data: {
+                    idmovimento,
+                    seqitem,
                     idlocal,
                     idproduto,
                     quantidade,
@@ -558,6 +564,8 @@ export async function AppRoutes(server:FastifyInstance){
         server.put('/estoque/update', async (request) => {
             const putBody = z.object({
                 idestoque: z.number(),
+                idmovimento: z.number(),
+                seqitem: z.number(),
                 idlocal: z.number(),
                 idproduto: z.number(),
                 quantidade: z.number(),
@@ -565,6 +573,8 @@ export async function AppRoutes(server:FastifyInstance){
             })
         
             const { idestoque,
+                    idmovimento,
+                    seqitem,
                     idlocal,
                     idproduto,
                     quantidade,
@@ -593,6 +603,8 @@ export async function AppRoutes(server:FastifyInstance){
                     idestoque: idestoque,
                 },
                 data: {
+                    idmovimento,
+                    seqitem,
                     idlocal,
                     idproduto,
                     quantidade,
@@ -613,7 +625,7 @@ export async function AppRoutes(server:FastifyInstance){
     
             const estoqueApagado = await prisma.tbEstoque.delete({
                 where: {
-                    idestoque: idestoque
+                    idestoque: idestoque,
                 },
             })
     
@@ -697,88 +709,156 @@ export async function AppRoutes(server:FastifyInstance){
         return movimentoDeleted
     })
 
-    // CRUD tbNF
+    //CRUD TbMovItens 
+    server.get('/movimentoItens', async () => {
+        const movimentosItens = await prisma.tbMovItens.findMany()
 
-    server.get('/nf', async () => {
-        const nfs = await prisma.tbNf.findMany()
-
-        return nfs
+        return movimentosItens
     })
 
-    server.post('/nf/add', async (request) => {
-        const bodyData = z.object({
-            numnf : z.number(),
-            idmovimento: z.number(),
-            serienf: z.number(),
-            idfor: z.number(),
-            idusuario_inclusao: z.number(),
-            dtemissao: z.date(),
-            vlrtotal: z.number()
-        })
-
-        const {numnf, idmovimento, serienf, idfor, idusuario_inclusao, dtemissao, vlrtotal} = bodyData.parse(request.body)
-
-        const newNF = await prisma.tbNf.create({
-            data: {
-                numnf,
-                idmovimento,
-                serienf,
-                idfor,
-                idusuario_inclusao,
-                dtemissao,
-                vlrtotal
-            },
-        })
-
-        return newNF
-    })
-
-    server.put('/nf/update', async (request) => {
+    server.post('/movimentoItens/add', async (request) => {
         const putBody = z.object({
-            idnf : z.number(),
-            numnf : z.number(),
+            seqitem: z.number(),
             idmovimento: z.number(),
-            serienf: z.number(),
-            idfor: z.number(),
-            idusuario_inclusao: z.number(),
-            dtemissao: z.date(),
-            vlrtotal: z.number()
+            idproduto: z.number(),
+            idlocal: z.number(),
+            dtinc: z.date(),
+            quantidade: z.number()
         })
 
-        const {idnf,
-            numnf, idmovimento, serienf, idfor, idusuario_inclusao, dtemissao, vlrtotal} = putBody.parse(request.body)
+        const {
+            seqitem,
+            idmovimento,
+            idproduto,
+            idlocal,
+            dtinc,
+            quantidade
+        } = putBody.parse(request.body)
 
-        const nfUpdate = await prisma.tbNf.updateMany({
+        //Verifica se existe id do local
+        const confereLocal = await prisma.tbLocais.findUnique({
+            where: { idlocal: idlocal },
+          });
+
+         if (!confereLocal) {
+            return ('Local de estoque não existe');
+        }
+
+        //Verifica se existe id do produto
+        const confereProduto = await prisma.tbProdutos.findUnique({
+            where: { idproduto: idproduto },
+          });
+
+        if (!confereProduto) {
+            return ('Produto não existe');
+        }
+
+        //verififca se existe id da Tmovimentos
+        const confereMovimentoId = await prisma.tbMovimentos.findUnique({
+            where: { idmovimento: idmovimento },
+          });
+
+        if (!confereMovimentoId) {
+            return ('Movimento não existe');
+        }
+
+        const newMovimentoItens = await prisma.tbMovItens.create({
+            data: {
+                seqitem,
+                idmovimento,
+                idproduto,
+                idlocal,
+                dtinc,
+                quantidade
+            },
+        })
+
+        return newMovimentoItens
+    })
+
+    server.put('/movimentoItens/update', async (request) => {
+        const putBody = z.object({
+            seqitem: z.number(),
+            idmovimento: z.number(),
+            idproduto: z.number(),
+            idlocal: z.number(),
+            dtinc: z.date(),
+            quantidade: z.number()
+        })
+    
+        const { seqitem,
+                idmovimento,
+                idproduto,
+                idlocal,
+                dtinc,
+                quantidade} = putBody.parse(request.body)
+
+        //Verifica se existe id de local
+        const confereLocal = await prisma.tbLocais.findUnique({
+            where: { idlocal: idlocal },
+          });
+
+         if (!confereLocal) {
+            return ('Local de Estoque não existe');
+        }
+
+        //Verifica se existe id de tipo do produto
+        const confereProduto = await prisma.tbProdutos.findUnique({
+            where: { idproduto: idproduto },
+          });
+
+        if (!confereProduto) {
+            return ('Produto não existe');
+        }  
+        
+        //verififca se existe id da Tmovimentos
+        const confereMovimentoId = await prisma.tbMovimentos.findUnique({
+            where: { idmovimento: idmovimento },
+          });
+    
+        if (!confereMovimentoId) {
+            return ('Movimento não existe');
+        }
+
+        const movimentosItensUpdate = await prisma.tbMovItens.updateMany({
             where: {
-                idnf : idnf,
+                seqitem: seqitem,
+                idmovimento: idmovimento,
             },
             data: {
-                numnf,
+                seqitem,
                 idmovimento,
-                serienf,
-                idfor,
-                idusuario_inclusao,
-                dtemissao,
-                vlrtotal
+                idproduto,
+                idlocal,
+                dtinc,
+                quantidade                
             },
         })
-        return (nfUpdate.count >= 1) ?  'Atualização realizada com sucesso!' :  'Nada foi atualizado!'
+        return (movimentosItensUpdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
     })
 
-    server.delete('/nf/delete/:nfID', async (request) => {
+    server.delete('/movimentoItens/delete/:seqitem/:idmovimento', async (request) => {
         const idParam = z.object({
-            nfID: z.string(),
+            seqitem: z.string(),
+            idmovimento: z.string(),
+
         })
 
-        const { nfID } = idParam.parse(request.params)
-        const idnf = Number(nfID)
+        const { seqitem, idmovimento  } = idParam.parse(request.params)
 
-        const nfDeleted = await prisma.tbNf.delete({
+        const seqItem = Number(seqitem)
+
+        const idMovimento = Number(idmovimento)
+
+        const movimentoItemDeleted = await prisma.tbMovitens.delete({
             where: {
-                idnf: idnf
+                seqitem: seqItem,
+                idmovimento: idMovimento,
             },
         })
 
-        return nfDeleted
+        return movimentoItemDeleted
     })
+
+
 }
