@@ -504,19 +504,15 @@ export async function AppRoutes(server:FastifyInstance){
     
     server.post('/estoque/add', async (request) => {
         const putBody = z.object({
-            idmovimento: z.number(),
-            seqitem: z.number(),
-            idlocal: z.number(),
             idproduto: z.number(),
+            idlocal: z.number(),
             quantidade: z.number(),
             dtinc: z.date()
         })
     
         const {
-            idmovimento,
-            seqitem,
-            idlocal,
             idproduto,
+            idlocal,
             quantidade,
             dtinc
         } = putBody.parse(request.body)
@@ -534,10 +530,8 @@ export async function AppRoutes(server:FastifyInstance){
         if(confereLocal && confereProduto){
             const newEntry = await prisma.tbEstoque.create({
                 data: {
-                    idmovimento,
-                    seqitem,
-                    idlocal,
                     idproduto,
+                    idlocal,
                     quantidade,
                     dtinc
                 },
@@ -553,19 +547,15 @@ export async function AppRoutes(server:FastifyInstance){
     server.put('/estoque/update', async (request) => {
         const putBody = z.object({
             idestoque: z.number(),
-            idmovimento: z.number(),
-            seqitem: z.number(),
-            idlocal: z.number(),
             idproduto: z.number(),
+            idlocal: z.number(),
             quantidade: z.number(),
             dtinc: z.date()
         })
         
         const { idestoque,
-                idmovimento,
-                seqitem,
-                idlocal,
                 idproduto,
+                idlocal,
                 quantidade,
                 dtinc} = putBody.parse(request.body)
     
@@ -585,10 +575,8 @@ export async function AppRoutes(server:FastifyInstance){
                     idestoque: idestoque,
                 },
                 data: {
-                    idmovimento,
-                    seqitem,
-                    idlocal,
                     idproduto,
+                    idlocal,
                     quantidade,
                     dtinc
                 },
@@ -834,8 +822,6 @@ export async function AppRoutes(server:FastifyInstance){
     })
 
 
-
-
     //CRUD TB NF
 
     server.get('/nf', async () => {
@@ -845,123 +831,136 @@ export async function AppRoutes(server:FastifyInstance){
     
     server.post('/nf/add', async (request) => {
         const putBody = z.object({
+            numnf: z.number(),
             idmovimento: z.number(),
-            seqitem: z.number(),
-            idlocal: z.number(),
-            idproduto: z.number(),
-            quantidade: z.number(),
-            dtinc: z.date()
+            serienf: z.number(),
+            idfor: z.number(),
+            idusuario_inclusao: z.number(),
+            dtemissao: z.date(),
+            vlrtotal: z.number(),
+            observacao: z.string()
         })
     
         const {
+            numnf,
             idmovimento,
-            seqitem,
-            idlocal,
-            idproduto,
-            quantidade,
-            dtinc
+            serienf,
+            idfor,
+            idusuario_inclusao,
+            dtemissao,
+            vlrtotal,
+            observacao //ADICIONAR ESSE CAMPO
         } = putBody.parse(request.body)
     
         //Verifica se existe id do local
-        const confereLocal = await prisma.tbLocais.findUnique({
-            where: { idlocal: idlocal },
+        const conferemovimento = await prisma.tbMovimentos.findUnique({
+            where: { idmovimento: idmovimento },
             });
     
             //Verifica se existe id do produto
-        const confereProduto = await prisma.tbProdutos.findUnique({
-            where: { idproduto: idproduto },
+        const confereuser = await prisma.tbUsuarios.findUnique({
+            where: { idusuario: idusuario_inclusao },
+            });
+
+        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+            where: { idfor: idfor },
             });
         
-        if(confereLocal && confereProduto){
-            const newEntry = await prisma.tbEstoque.create({
+        if(conferemovimento && confereuser && conferefornecedor){
+            const newNf = await prisma.tbNf.create({
                 data: {
-                    idmovimento
-                    seqitem,
-                    idlocal,
-                    idproduto,
-                    quantidade,
-                    dtinc
+                    numnf,
+                    idmovimento,
+                    serienf,
+                    idfor,
+                    idusuario_inclusao,
+                    dtemissao,
+                    vlrtotal
                 },
             })
         
-            return newEntry
+            return newNf
         }
         else{
-            return(`Produto ou local de estoque não encontrados!`)
+            return(`Movimento, usuário ou fornecedor não encontrados!`)
         }
     })
     
     server.put('/nf/update', async (request) => {
         const putBody = z.object({
-            idestoque: z.number(),
+            idnf: z.number(),
+            numnf: z.number(),
             idmovimento: z.number(),
-            seqitem: z.number(),
-            idlocal: z.number(),
-            idproduto: z.number(),
-            quantidade: z.number(),
-            dtinc: z.date()
+            serienf: z.number(),
+            idfor: z.number(),
+            idsuario_inclusao: z.number(),
+            dtemissao: z.date(),
+            vlrtotal: z.number()
         })
         
-        const { idestoque,
+        const { idnf,
+                numnf,
                 idmovimento,
-                seqitem,
-                idlocal,
-                idproduto,
-                quantidade,
-                dtinc} = putBody.parse(request.body)
+                serienf,
+                idfor,
+                idsuario_inclusao,
+                dtemissao,
+                vlrtotal} = putBody.parse(request.body)
     
         //Verifica se existe id de local
-        const confereLocal = await prisma.tbLocais.findUnique({
-            where: { idlocal: idlocal },
+        const conferemovimento = await prisma.tbMovimentos.findUnique({
+            where: { idmovimento: idmovimento },
             });
     
-        //Verifica se existe id de tipo do produto
-        const confereProduto = await prisma.tbProdutos.findUnique({
-            where: { idproduto: idproduto },
+            //Verifica se existe id do produto
+        const confereuser = await prisma.tbUsuarios.findUnique({
+            where: { idusuario: idsuario_inclusao },
             });
-                
-        if(confereProduto && confereLocal){
-            const estoqueUpdate = await prisma.tbEstoque.updateMany({
+
+        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+            where: { idfor: idfor },
+            });
+        
+        if(conferemovimento && confereuser && conferefornecedor){
+            const nfupdate = await prisma.tbNf.updateMany({
                 where: {
-                    idestoque: idestoque,
+                    idnf: idnf,
                 },
                 data: {
+                    numnf,
                     idmovimento,
-                    seqitem,
-                    idlocal,
-                    idproduto,
-                    quantidade,
-                    dtinc
+                    serienf,
+                    idfor,
+                    idsuario_inclusao,
+                    dtemissao,
+                    vlrtotal
                 },
             })
-            return (estoqueUpdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
+            return (nfupdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
         }
         else{
-            return(`Produto ou local de estoque não encontrados!`)
+            return(`Movimento, usuário ou fornecedor não encontrados!`)
         }
 
     })
     
     server.delete('/nf/delete/:nfId', async (request) => {
         const idParam = z.object({
-            estoqueId: z.string(),
+            idnf: z.string(),
         })
     
-        const { estoqueId } = idParam.parse(request.params)
+        const { idnf } = idParam.parse(request.params)
     
-        const idestoque = Number(estoqueId)
+        const nfid = Number(idnf)
     
-        const estoqueApagado = await prisma.tbEstoque.delete({
+        const nfapagada = await prisma.tbNf.delete({
             where: {
-                idestoque: idestoque,
+                idnf: nfid,
             },
         })
     
-        return estoqueApagado
+        return nfapagada
     })
-
-
-
 
 
 }
