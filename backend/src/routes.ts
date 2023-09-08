@@ -522,7 +522,7 @@ export async function AppRoutes(server:FastifyInstance){
             where: { idlocal: idlocal },
             });
     
-            //Verifica se existe id do produto
+        //Verifica se existe id do produto
         const confereProduto = await prisma.tbProdutos.findUnique({
             where: { idproduto: idproduto },
             });
@@ -564,7 +564,7 @@ export async function AppRoutes(server:FastifyInstance){
             where: { idlocal: idlocal },
             });
     
-        //Verifica se existe id de tipo do produto
+        //Verifica se existe id do produto
         const confereProduto = await prisma.tbProdutos.findUnique({
             where: { idproduto: idproduto },
             });
@@ -630,16 +630,31 @@ export async function AppRoutes(server:FastifyInstance){
 
         const {tipmov, idfor, idusuario_alteracao, dtinc} = bodyData.parse(request.body)
 
-        const newMovimento = await prisma.tbMovimentos.create({
-            data: {
-                tipmov,
-                idfor,
-                idusuario_alteracao,
-                dtinc
-            },
-        })
-
-        return newMovimento
+        //Verifica se existe id do fornecedor
+        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+            where: { idfor: idfor },
+            });
+            
+        //Verifica se existe id do usuario
+        const confereuser = await prisma.tbUsuarios.findUnique({
+            where: { idusuario: idusuario_alteracao },
+            });
+        
+        if(conferefornecedor && confereuser) {
+            const newMovimento = await prisma.tbMovimentos.create({
+                data: {
+                    tipmov,
+                    idfor,
+                    idusuario_alteracao,
+                    dtinc
+                },
+            })
+    
+            return newMovimento
+        }
+        else {
+            return(`Fornecedor ou usuário nao encontrados!`)
+        }
     })
 
     server.put('/movimentos/update', async (request) => {
@@ -657,19 +672,33 @@ export async function AppRoutes(server:FastifyInstance){
             idusuario_alteracao,
             dtinc} = putBody.parse(request.body)
 
-        const movimentosUpdate = await prisma.tbMovimentos.updateMany({
-            where: {
-                idmovimento : idmovimento,
-            },
-            data: {
-                idmovimento,
-                tipmov,
-                idfor,
-                idusuario_alteracao,
-                dtinc
-            },
-        })
-        return (movimentosUpdate.count >= 1) ?  'Atualização realizada com sucesso!' :  'Nada foi atualizado!'
+        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+            where: { idfor: idfor },
+            });
+                
+        //Verifica se existe id do usuario
+        const confereuser = await prisma.tbUsuarios.findUnique({
+            where: { idusuario: idusuario_alteracao },
+            });
+            
+        if(conferefornecedor && confereuser) {
+            const movimentosUpdate = await prisma.tbMovimentos.updateMany({
+                where: {
+                    idmovimento : idmovimento,
+                },
+                data: {
+                    idmovimento,
+                    tipmov,
+                    idfor,
+                    idusuario_alteracao,
+                    dtinc
+                },
+            })
+            return (movimentosUpdate.count >= 1) ?  'Atualização realizada com sucesso!' :  'Nada foi atualizado!'
+        }
+        else {
+            return(`Fornecedor ou usuário nao encontrados!`)
+        }
     })
 
     server.delete('/movimentos/delete/:movID', async (request) => {
@@ -981,7 +1010,7 @@ export async function AppRoutes(server:FastifyInstance){
     //CRUD TB NFITENS
 
     server.get('/nfitens', async () => {
-        const nfitem = await prisma.tbNf.findMany()
+        const nfitem = await prisma.tbNfitens.findMany()
         return nfitem
     })
     
@@ -1171,89 +1200,76 @@ export async function AppRoutes(server:FastifyInstance){
         }
     })
     
-    server.put('/nfitens/update', async (request) => {
+    server.put('/compsicao/update', async (request) => {
         const putBody = z.object({
-            idnf: z.number(),
-            idmovimento: z.number(),
-            seqitem: z.number(),
+            idcomp: z.number(),
             idproduto: z.number(),
-            vlrunitario: z.number(),
+            idprodutocomp: z.number(),
             quantidade: z.number(),
-            vlrtotitem: z.number(),
         })
         
-        const { 
-            idnf,
-            idmovimento,
-            seqitem,
+        const {
+            idcomp,
             idproduto,
-            vlrunitario,
-            quantidade,
-            vlrtotitem
+            idprodutocomp,
+            quantidade
         } = putBody.parse(request.body)
-    
-        //Verifica se existe id de local
-        const conferenf = await prisma.tbNf.findUnique({
-            where: { idnf: idnf },
-            });
-    
-        //Verifica se existe id do produto
-        const conferemovimento = await prisma.tbMovimentos.findUnique({
-            where: { idmovimento: idmovimento },
-            });
 
-        const confereproduto = await prisma.tbProdutos.findUnique({
-            where: { idproduto: idproduto },
+        const produtos = [idproduto, idprodutocomp]
+
+        //Verifica se existe id do produto
+        const confereprodutos = await prisma.tbProdutos.findMany({
+            where: {
+                idproduto: {
+                    in: produtos
+                }
+            },
             });
         
-        if(conferenf && conferemovimento && confereproduto){
-            const nfupdate = await prisma.tbNfitens.updateMany({
+        if(confereprodutos.length === produtos.length){
+            const nfupdate = await prisma.tbProdcomposicao.updateMany({
                 where: {
-                    idnf: idnf,
-                    seqitem: seqitem,
-                    idproduto: idproduto
+                    idcomp: idcomp,
+                    idproduto: idproduto,
+                    idprodutocomp: idprodutocomp
                 },
                 data: {
-                    idmovimento,
-                    vlrunitario,
-                    quantidade,
-                    vlrtotitem
+                    quantidade
                 },
             })
             return (nfupdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
         }
         else{
-            return(`Nota fiscal, movimento ou produto não encontrados!`)
+            return(`Produtos não encontradosS!`)
         }
 
     })
     
-    server.delete('/nfitens/delete/:nfId/:seqitem/:produtoId', async (request) => {
+    server.delete('/composicao/delete/:compId/:prodId/:prodcompId', async (request) => {
         const idParam = z.object({
-            idnf: z.string(),
-            seqitem: z.string(),
-            idproduto: z.string()
+            idcomp: z.string(),
+            idproduto: z.string(),
+            idprodutocomp: z.string()
         })
     
-        const { idnf, seqitem, idproduto } = idParam.parse(request.params)
+        const { idcomp, idproduto, idprodutocomp } = idParam.parse(request.params)
     
-        const nfid = Number(idnf)
-        const seqItem = Number(seqitem)
-        const idProduto = Number(idproduto)
+        const compId = Number(idcomp)
+        const prodId = Number(idproduto)
+        const prodcompId = Number(idprodutocomp)
     
-        const itemapagado = await prisma.tbNfitens.delete({
+        const composicaoapagada = await prisma.tbProdcomposicao.delete({
             where: {
-                idnf_seqitem_idproduto:{
-                    idnf: nfid,
-                    seqitem: seqItem,
-                    idproduto: idProduto
+                idcomp_idproduto_idprodutocomp: {
+                    idcomp: compId,
+                    idproduto: prodId,
+                    idprodutocomp: prodcompId
                 },
             },
         })
     
-        return itemapagado
+        return composicaoapagada
     })
-
 
 
 }
