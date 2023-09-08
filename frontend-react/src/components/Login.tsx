@@ -1,3 +1,4 @@
+import { Grid, TextField } from "@mui/material"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
@@ -50,21 +51,31 @@ export default function Login() {
     }
 
     return (
-        <div className="bg-slate-700 flex items-center justify-center h-screen w-screen">
-            <div className="bg-teal-600 p-8 rounded-lg drop-shadow-2x1 w-96 flex flex-col items-center">
-                <h2 className="font-bold mb-4"> Login </h2>
-                <form onSubmit={handleLogin}>
-                    <div className="mb-4">
-                        <label className="block mb-2 font-semibold" htmlFor="username">Username:</label>
-                        <input type="text" id="username" value={username} onChange={e => setUsername(e.target.value)} className="w-full border rounded p-2"></input>
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-2 font-semibold" htmlFor="password">Password:</label>
-                        <input type="password" id="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full border rounded p-2"></input>
-                    </div>
-                    <button type="submit" className="w-full bg-teal-500 text-white font-semibold p-2 rounded">Login</button>
-                </form>
-            </div>
+        <div>
+            <Grid container style={{ minHeight: '100vh'}}>
+                <Grid container item xs={12} sm={6} alignItems="center" direction="column" justifyContent="space-between" style={{padding: 10}}>
+                    <div />
+                        <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 400, minWidth: 300}}>
+                            <Grid container alignItems="center" direction="column">
+                                <img 
+                                    src="https://logospng.org/download/puma/logo-puma-icon-512.png" 
+                                    width={100} 
+                                    alt="logo"
+                                />
+                            </Grid>
+                            <TextField label="Login" margin="normal" />
+                            <TextField label="Senha" margin="normal" />
+                        </div>
+                    <div />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <img 
+                        src="login.png" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover'}} 
+                        alt="brand"
+                    />
+                </Grid>
+            </Grid>
         </div>
     )
 }
