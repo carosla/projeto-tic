@@ -837,15 +837,12 @@ export async function AppRoutes(server:FastifyInstance){
             idmovimento: z.string(),
             seqitem: z.string(),
             idproduto: z.string()
-
         })
 
         const { idmovimento, seqitem, idproduto  } = idParam.parse(request.params)
 
         const seqItem = Number(seqitem)
-
         const idMovimento = Number(idmovimento)
-
         const idProduto = Number(idproduto)
 
         const movimentoItemDeleted = await prisma.tbMovitens.delete({
@@ -866,8 +863,8 @@ export async function AppRoutes(server:FastifyInstance){
     //CRUD TB NF
 
     server.get('/nf', async () => {
-        const nf = await prisma.tbNf.findMany()
-        return nf
+        const nfs = await prisma.tbNf.findMany()
+        return nfs
     })
     
     server.post('/nf/add', async (request) => {
@@ -890,7 +887,7 @@ export async function AppRoutes(server:FastifyInstance){
             idusuario_inclusao,
             dtemissao,
             vlrtotal,
-            observacao //ADICIONAR ESSE CAMPO
+            //observacao //ADICIONAR ESSE CAMPO
         } = putBody.parse(request.body)
     
         //Verifica se existe id do local
@@ -934,7 +931,7 @@ export async function AppRoutes(server:FastifyInstance){
             idmovimento: z.number(),
             serienf: z.number(),
             idfor: z.number(),
-            idsuario_inclusao: z.number(),
+            idusuario_inclusao: z.number(),
             dtemissao: z.date(),
             vlrtotal: z.number()
         })
@@ -944,7 +941,7 @@ export async function AppRoutes(server:FastifyInstance){
                 idmovimento,
                 serienf,
                 idfor,
-                idsuario_inclusao,
+                idusuario_inclusao,
                 dtemissao,
                 vlrtotal} = putBody.parse(request.body)
     
@@ -955,7 +952,7 @@ export async function AppRoutes(server:FastifyInstance){
     
             //Verifica se existe id do produto
         const confereuser = await prisma.tbUsuarios.findUnique({
-            where: { idusuario: idsuario_inclusao },
+            where: { idusuario: idusuario_inclusao },
             });
 
         const conferefornecedor = await prisma.tbFornecedores.findUnique({
@@ -963,7 +960,7 @@ export async function AppRoutes(server:FastifyInstance){
             });
         
         if(conferemovimento && confereuser && conferefornecedor){
-            const nfupdate = await prisma.tbNf.updateMany({
+            const nfUpdate = await prisma.tbNf.updateMany({
                 where: {
                     idnf: idnf
                 },
@@ -972,12 +969,12 @@ export async function AppRoutes(server:FastifyInstance){
                     idmovimento,
                     serienf,
                     idfor,
-                    idsuario_inclusao,
+                    idusuario_inclusao,
                     dtemissao,
                     vlrtotal
                 },
             })
-            return (nfupdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
+            return (nfUpdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
         }
         else{
             return(`Movimento, usuário ou fornecedor não encontrados!`)
@@ -994,24 +991,21 @@ export async function AppRoutes(server:FastifyInstance){
     
         const nfid = Number(idnf)
     
-        const nfapagada = await prisma.tbNf.delete({
+        const nfApagada = await prisma.tbNf.delete({
             where: {
                 idnf: nfid,
             },
         })
     
-        return nfapagada
+        return nfApagada
     })
-
-
-
 
 
     //CRUD TB NFITENS
 
     server.get('/nfitens', async () => {
-        const nfitem = await prisma.tbNfitens.findMany()
-        return nfitem
+        const nfitems = await prisma.tbNfitens.findMany()
+        return nfitems
     })
     
     server.post('/nfitens/add', async (request) => {
@@ -1105,7 +1099,7 @@ export async function AppRoutes(server:FastifyInstance){
             });
         
         if(conferenf && conferemovimento && confereproduto){
-            const nfupdate = await prisma.tbNfitens.updateMany({
+            const itemUpdate = await prisma.tbNfitens.updateMany({
                 where: {
                     idnf: idnf,
                     seqitem: seqitem,
@@ -1118,7 +1112,7 @@ export async function AppRoutes(server:FastifyInstance){
                     vlrtotitem
                 },
             })
-            return (nfupdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
+            return (itemUpdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
         }
         else{
             return(`Nota fiscal, movimento ou produto não encontrados!`)
@@ -1139,7 +1133,7 @@ export async function AppRoutes(server:FastifyInstance){
         const seqItem = Number(seqitem)
         const idProduto = Number(idproduto)
     
-        const itemapagado = await prisma.tbNfitens.delete({
+        const itemApagado = await prisma.tbNfitens.delete({
             where: {
                 idnf_seqitem_idproduto:{
                     idnf: nfid,
@@ -1149,7 +1143,7 @@ export async function AppRoutes(server:FastifyInstance){
             },
         })
     
-        return itemapagado
+        return itemApagado
     })
 
     //CRUD TB PROD COMPOSICAO
@@ -1227,7 +1221,7 @@ export async function AppRoutes(server:FastifyInstance){
             });
         
         if(confereprodutos.length === produtos.length){
-            const nfupdate = await prisma.tbProdcomposicao.updateMany({
+            const compUpdate = await prisma.tbProdcomposicao.updateMany({
                 where: {
                     idcomp: idcomp,
                     idproduto: idproduto,
@@ -1237,7 +1231,7 @@ export async function AppRoutes(server:FastifyInstance){
                     quantidade
                 },
             })
-            return (nfupdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
+            return (compUpdate.count >= 1) ?  'Atualização com sucesso' :  'Nada foi atualizado'
         }
         else{
             return(`Produtos não encontradosS!`)
@@ -1258,7 +1252,7 @@ export async function AppRoutes(server:FastifyInstance){
         const prodId = Number(idproduto)
         const prodcompId = Number(idprodutocomp)
     
-        const composicaoapagada = await prisma.tbProdcomposicao.delete({
+        const composicaoApagada = await prisma.tbProdcomposicao.delete({
             where: {
                 idcomp_idproduto_idprodutocomp: {
                     idcomp: compId,
@@ -1268,7 +1262,7 @@ export async function AppRoutes(server:FastifyInstance){
             },
         })
     
-        return composicaoapagada
+        return composicaoApagada
     })
 
 
