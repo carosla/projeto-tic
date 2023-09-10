@@ -7,7 +7,7 @@ export async function AppRoutes(server:FastifyInstance){
     // CRUD Fornecedor
 
     server.get('/fornecedor', async () => {        
-        const fornecedor = await prisma.tbFornecedores.findMany()
+        const fornecedor = await prisma.tbfornecedores.findMany()
     
         return fornecedor
     })
@@ -41,7 +41,7 @@ export async function AppRoutes(server:FastifyInstance){
             complemento,
         } = postBody.parse(request.body)
     
-        const newForncedor = await prisma.tbFornecedores.create({
+        const newForncedor = await prisma.tbfornecedores.create({
             data: {
                 nomefor,
                 email,
@@ -91,7 +91,7 @@ export async function AppRoutes(server:FastifyInstance){
             email,
         } = putBody.parse(request.body)
 
-        const fornecedorUpdated = await prisma.tbFornecedores.updateMany({
+        const fornecedorUpdated = await prisma.tbfornecedores.updateMany({
             where: {
                 idfor: idfor,
             },
@@ -120,7 +120,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { idfor } = idParam.parse(request.params)
         const fornecedorId = Number(idfor)
     
-        const fornecedorDeleted = await prisma.tbFornecedores.delete({
+        const fornecedorDeleted = await prisma.tbfornecedores.delete({
             where: {
                 idfor: fornecedorId,
             },
@@ -134,7 +134,7 @@ export async function AppRoutes(server:FastifyInstance){
     // CRUD Unidades de medidas
 
     server.get('/unidadeMedida', async () => {        
-        const unidadeMedida = await prisma.tbUnidademedida.findMany()
+        const unidadeMedida = await prisma.tbunidademedida.findMany()
     
         return unidadeMedida
     })
@@ -150,7 +150,7 @@ export async function AppRoutes(server:FastifyInstance){
             nomeunidade,
         } = postBody.parse(request.body)
     
-        const newUnidadeMedida = await prisma.tbUnidademedida.create({
+        const newUnidadeMedida = await prisma.tbunidademedida.create({
             data: {
                 siglaun,
                 nomeunidade,
@@ -173,7 +173,7 @@ export async function AppRoutes(server:FastifyInstance){
             nomeunidade
         } = putBody.parse(request.body)
 
-        const unidadeMedidaUpdate = await prisma.tbUnidademedida.updateMany({
+        const unidadeMedidaUpdate = await prisma.tbunidademedida.updateMany({
             where: {
                 idunidade: idunidade,
             },
@@ -193,7 +193,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { idunidade } = idParam.parse(request.params)
         const UnidadeMedidaID = Number(idunidade)
     
-        const unidadeMedidaDeleted = await prisma.tbUnidademedida.delete({
+        const unidadeMedidaDeleted = await prisma.tbunidademedida.delete({
             where: {
                 idunidade: UnidadeMedidaID,
             },
@@ -207,7 +207,7 @@ export async function AppRoutes(server:FastifyInstance){
     // CRUD TIPOS DE PRODUTOS
 
     server.get('/tiposProdutos', async () => {        
-        const tiposProdutos = await prisma.tbTiposprodutos.findMany()
+        const tiposProdutos = await prisma.tbtiposprodutos.findMany()
     
         return tiposProdutos
     })
@@ -219,7 +219,7 @@ export async function AppRoutes(server:FastifyInstance){
     
         const {nometipprod} = bodyData.parse(request.body)
     
-        const newTipProd = await prisma.tbTiposprodutos.create({
+        const newTipProd = await prisma.tbtiposprodutos.create({
             data: {
                 nometipprod,
             },
@@ -236,7 +236,7 @@ export async function AppRoutes(server:FastifyInstance){
     
         const {idtipprod,nometipprod} = putBody.parse(request.body)
 
-        const tipoProdutoUpdate = await prisma.tbTiposprodutos.updateMany({
+        const tipoProdutoUpdate = await prisma.tbtiposprodutos.updateMany({
             where: {
                 idtipprod: idtipprod,
             },
@@ -255,7 +255,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { idtipprod } = idParam.parse(request.params)
         const tipProdId = Number(idtipprod)
     
-        const tipProdDeleted = await prisma.tbTiposprodutos.delete({
+        const tipProdDeleted = await prisma.tbtiposprodutos.delete({
             where: {
                 idtipprod: tipProdId,
             },
@@ -281,7 +281,7 @@ export async function AppRoutes(server:FastifyInstance){
             senha,
         } = postBody.parse(request.body)
     
-        const newUsuario = await prisma.tbUsuarios.create({
+        const newUsuario = await prisma.tbusuarios.create({
             data: {
                 usu_login,
                 nome,
@@ -299,7 +299,7 @@ export async function AppRoutes(server:FastifyInstance){
         })
 
         const {usu_login} = verificaBody.parse(request.body)
-        const result = await prisma.tbUsuarios.findFirst({
+        const result = await prisma.tbusuarios.findFirst({
             where: {
                 usu_login
             }
@@ -313,7 +313,7 @@ export async function AppRoutes(server:FastifyInstance){
             senha: z.string()
         })
         const {usu_login, senha} = verificaBody.parse(request.body)
-        const result = await prisma.tbUsuarios.findFirst({
+        const result = await prisma.tbusuarios.findFirst({
             where: {
                 usu_login,
                 senha
@@ -326,7 +326,7 @@ export async function AppRoutes(server:FastifyInstance){
     //CRUD - Produtos (Conectada a outras entidades)
 
     server.get('/produtos', async () => {
-        const produtos = await prisma.tbProdutos.findMany()
+        const produtos = await prisma.tbprodutos.findMany()
 
         return produtos
     })
@@ -347,17 +347,17 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
 
         //Verifica se existe id de unidade
-        const confereIdUnidade = await prisma.tbUnidademedida.findUnique({
+        const confereIdUnidade = await prisma.tbunidademedida.findUnique({
             where: { idunidade: idunidade },
           });
 
         //Verifica se existe id de tipo do produto
-        const confereIdTipoProd = await prisma.tbTiposprodutos.findUnique({
+        const confereIdTipoProd = await prisma.tbtiposprodutos.findUnique({
             where: { idtipprod: idtipprod },
           });
 
         if(confereIdTipoProd && confereIdUnidade) {
-            const newProduto = await prisma.tbProdutos.create({
+            const newProduto = await prisma.tbprodutos.create({
                 data: {
                     nomeprod,
                     idtipprod,
@@ -388,17 +388,17 @@ export async function AppRoutes(server:FastifyInstance){
                 quantminima} = putBody.parse(request.body)
 
         //Verifica se existe id de unidade
-        const confereIdUnidade = await prisma.tbUnidademedida.findUnique({
+        const confereIdUnidade = await prisma.tbunidademedida.findUnique({
             where: { idunidade: idunidade },
           });
 
         //Verifica se existe id de tipo do produto
-        const confereIdTipoProd = await prisma.tbTiposprodutos.findUnique({
+        const confereIdTipoProd = await prisma.tbtiposprodutos.findUnique({
             where: { idtipprod: idtipprod },
           });    
 
         if(confereIdTipoProd && confereIdUnidade) {
-            const produtoUpdate = await prisma.tbProdutos.updateMany({
+            const produtoUpdate = await prisma.tbprodutos.updateMany({
                 where: {
                     idproduto: idproduto,
                 },
@@ -425,7 +425,7 @@ export async function AppRoutes(server:FastifyInstance){
 
         const idproduto = Number(produtoId)
 
-        const produtosDeleted = await prisma.tbProdutos.delete({
+        const produtosDeleted = await prisma.tbprodutos.delete({
             where: {
                 idproduto: idproduto,
             },
@@ -437,7 +437,7 @@ export async function AppRoutes(server:FastifyInstance){
     // CRUD Locais de estoque
 
     server.get('/locaisEstoque', async () => {
-        const locaisEstoque = await prisma.tbLocais.findMany()
+        const locaisEstoque = await prisma.tblocais.findMany()
 
         return locaisEstoque
     })
@@ -449,7 +449,7 @@ export async function AppRoutes(server:FastifyInstance){
 
         const {nomelocal} = bodyData.parse(request.body)
 
-        const newLocalEstoque = await prisma.tbLocais.create({
+        const newLocalEstoque = await prisma.tblocais.create({
             data: {
                 nomelocal
             },
@@ -467,7 +467,7 @@ export async function AppRoutes(server:FastifyInstance){
         const {idlocal,
               nomelocal} = putBody.parse(request.body)
 
-        const locaisUpdate = await prisma.tbLocais.updateMany({
+        const locaisUpdate = await prisma.tblocais.updateMany({
             where: {
                 idlocal : idlocal,
             },
@@ -486,7 +486,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { LocalId } = idParam.parse(request.params)
         const idlocal = Number(LocalId)
 
-        const locaisDeleted = await prisma.tbLocais.delete({
+        const locaisDeleted = await prisma.tblocais.delete({
             where: {
                 idlocal: idlocal,
             },
@@ -498,7 +498,7 @@ export async function AppRoutes(server:FastifyInstance){
     //CRUD - ESTOQUE (Conectada a outras entidades)
 
     server.get('/estoque', async () => {
-        const estoque = await prisma.tbEstoque.findMany()
+        const estoque = await prisma.tbestoque.findMany()
         return estoque
     })
     
@@ -518,17 +518,17 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
     
         //Verifica se existe id do local
-        const confereLocal = await prisma.tbLocais.findUnique({
+        const confereLocal = await prisma.tblocais.findUnique({
             where: { idlocal: idlocal },
             });
     
         //Verifica se existe id do produto
-        const confereProduto = await prisma.tbProdutos.findUnique({
+        const confereProduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
             });
         
         if(confereLocal && confereProduto){
-            const newEntry = await prisma.tbEstoque.create({
+            const newEntry = await prisma.tbestoque.create({
                 data: {
                     idproduto,
                     idlocal,
@@ -560,17 +560,17 @@ export async function AppRoutes(server:FastifyInstance){
                 dtinc} = putBody.parse(request.body)
     
         //Verifica se existe id de local
-        const confereLocal = await prisma.tbLocais.findUnique({
+        const confereLocal = await prisma.tblocais.findUnique({
             where: { idlocal: idlocal },
             });
     
         //Verifica se existe id do produto
-        const confereProduto = await prisma.tbProdutos.findUnique({
+        const confereProduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
             });
                 
         if(confereProduto && confereLocal){
-            const estoqueUpdate = await prisma.tbEstoque.updateMany({
+            const estoqueUpdate = await prisma.tbestoque.updateMany({
                 where: {
                     idestoque: idestoque,
                 },
@@ -600,7 +600,7 @@ export async function AppRoutes(server:FastifyInstance){
         const idestoque = Number(estoqueId)
         const idprod = Number(prodId)
     
-        const estoqueApagado = await prisma.tbEstoque.delete({
+        const estoqueApagado = await prisma.tbestoque.delete({
             where: {
                 idestoque_idproduto: {
                     idestoque: idestoque,
@@ -612,10 +612,10 @@ export async function AppRoutes(server:FastifyInstance){
         return estoqueApagado
     })
 
-    // CRUD tbMovimentos
+    // CRUD tbmovimentos
 
     server.get('/movimentos', async () => {
-        const movimentos = await prisma.tbMovimentos.findMany()
+        const movimentos = await prisma.tbmovimentos.findMany()
 
         return movimentos
     })
@@ -631,17 +631,17 @@ export async function AppRoutes(server:FastifyInstance){
         const {tipmov, idfor, idusuario_alteracao, dtinc} = bodyData.parse(request.body)
 
         //Verifica se existe id do fornecedor
-        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+        const conferefornecedor = await prisma.tbfornecedores.findUnique({
             where: { idfor: idfor },
             });
             
         //Verifica se existe id do usuario
-        const confereuser = await prisma.tbUsuarios.findUnique({
+        const confereuser = await prisma.tbusuarios.findUnique({
             where: { idusuario: idusuario_alteracao },
             });
         
         if(conferefornecedor && confereuser) {
-            const newMovimento = await prisma.tbMovimentos.create({
+            const newMovimento = await prisma.tbmovimentos.create({
                 data: {
                     tipmov,
                     idfor,
@@ -672,17 +672,17 @@ export async function AppRoutes(server:FastifyInstance){
             idusuario_alteracao,
             dtinc} = putBody.parse(request.body)
 
-        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+        const conferefornecedor = await prisma.tbfornecedores.findUnique({
             where: { idfor: idfor },
             });
                 
         //Verifica se existe id do usuario
-        const confereuser = await prisma.tbUsuarios.findUnique({
+        const confereuser = await prisma.tbusuarios.findUnique({
             where: { idusuario: idusuario_alteracao },
             });
             
         if(conferefornecedor && confereuser) {
-            const movimentosUpdate = await prisma.tbMovimentos.updateMany({
+            const movimentosUpdate = await prisma.tbmovimentos.updateMany({
                 where: {
                     idmovimento : idmovimento,
                 },
@@ -709,7 +709,7 @@ export async function AppRoutes(server:FastifyInstance){
         const { movID } = idParam.parse(request.params)
         const idmov = Number(movID)
 
-        const movimentoDeleted = await prisma.tbMovimentos.delete({
+        const movimentoDeleted = await prisma.tbmovimentos.delete({
             where: {
                 idmovimento: idmov,
             },
@@ -718,9 +718,9 @@ export async function AppRoutes(server:FastifyInstance){
         return movimentoDeleted
     })
 
-    //CRUD TbMovItens 
+    //CRUD tbmovitens 
     server.get('/movimentoItens', async () => {
-        const movimentosItens = await prisma.tbMovitens.findMany()
+        const movimentosItens = await prisma.tbmovitens.findMany()
 
         return movimentosItens
     })
@@ -745,22 +745,22 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
 
         //Verifica se existe id do local
-        const confereLocal = await prisma.tbLocais.findUnique({
+        const confereLocal = await prisma.tblocais.findUnique({
             where: { idlocal: idlocal },
           });
 
         //Verifica se existe id do produto
-        const confereProduto = await prisma.tbProdutos.findUnique({
+        const confereProduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
           });
 
         //verififca se existe id da Tmovimentos
-        const confereMovimentoId = await prisma.tbMovimentos.findUnique({
+        const confereMovimentoId = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
           });
 
         if(confereLocal && confereProduto && confereMovimentoId){
-            const newMovimentoItens = await prisma.tbMovitens.create({
+            const newMovimentoItens = await prisma.tbmovitens.create({
                 data: {
                     seqitem,
                     idmovimento,
@@ -796,22 +796,22 @@ export async function AppRoutes(server:FastifyInstance){
                 quantidade} = putBody.parse(request.body)
 
         //Verifica se existe id de local
-        const confereLocal = await prisma.tbLocais.findUnique({
+        const confereLocal = await prisma.tblocais.findUnique({
             where: { idlocal: idlocal },
           });
 
         //Verifica se existe id de tipo do produto
-        const confereProduto = await prisma.tbProdutos.findUnique({
+        const confereProduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
           });
 
         //verififca se existe id da Tmovimentos
-        const confereMovimentoId = await prisma.tbMovimentos.findUnique({
+        const confereMovimentoId = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
           });
 
         if(confereLocal && confereProduto && confereMovimentoId){
-            const movimentosItensUpdate = await prisma.tbMovitens.updateMany({
+            const movimentosItensUpdate = await prisma.tbmovitens.updateMany({
                 where: {
                     seqitem: seqitem,
                     idmovimento: idmovimento,
@@ -845,7 +845,7 @@ export async function AppRoutes(server:FastifyInstance){
         const idMovimento = Number(idmovimento)
         const idProduto = Number(idproduto)
 
-        const movimentoItemDeleted = await prisma.tbMovitens.delete({
+        const movimentoItemDeleted = await prisma.tbmovitens.delete({
             where: {
                 idmovimento_seqitem_idproduto:
                 {
@@ -863,7 +863,7 @@ export async function AppRoutes(server:FastifyInstance){
     //CRUD TB NF
 
     server.get('/nf', async () => {
-        const nfs = await prisma.tbNf.findMany()
+        const nfs = await prisma.tbnf.findMany()
         return nfs
     })
     
@@ -891,21 +891,21 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
     
         //Verifica se existe id do local
-        const conferemovimento = await prisma.tbMovimentos.findUnique({
+        const conferemovimento = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
             });
     
             //Verifica se existe id do produto
-        const confereuser = await prisma.tbUsuarios.findUnique({
+        const confereuser = await prisma.tbusuarios.findUnique({
             where: { idusuario: idusuario_inclusao },
             });
 
-        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+        const conferefornecedor = await prisma.tbfornecedores.findUnique({
             where: { idfor: idfor },
             });
         
         if(conferemovimento && confereuser && conferefornecedor){
-            const newNf = await prisma.tbNf.create({
+            const newNf = await prisma.tbnf.create({
                 data: {
                     numnf,
                     idmovimento,
@@ -946,21 +946,21 @@ export async function AppRoutes(server:FastifyInstance){
                 vlrtotal} = putBody.parse(request.body)
     
         //Verifica se existe id de local
-        const conferemovimento = await prisma.tbMovimentos.findUnique({
+        const conferemovimento = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
             });
     
             //Verifica se existe id do produto
-        const confereuser = await prisma.tbUsuarios.findUnique({
+        const confereuser = await prisma.tbusuarios.findUnique({
             where: { idusuario: idusuario_inclusao },
             });
 
-        const conferefornecedor = await prisma.tbFornecedores.findUnique({
+        const conferefornecedor = await prisma.tbfornecedores.findUnique({
             where: { idfor: idfor },
             });
         
         if(conferemovimento && confereuser && conferefornecedor){
-            const nfUpdate = await prisma.tbNf.updateMany({
+            const nfUpdate = await prisma.tbnf.updateMany({
                 where: {
                     idnf: idnf
                 },
@@ -991,7 +991,7 @@ export async function AppRoutes(server:FastifyInstance){
     
         const nfid = Number(idnf)
     
-        const nfApagada = await prisma.tbNf.delete({
+        const nfApagada = await prisma.tbnf.delete({
             where: {
                 idnf: nfid,
             },
@@ -1004,7 +1004,7 @@ export async function AppRoutes(server:FastifyInstance){
     //CRUD TB NFITENS
 
     server.get('/nfitens', async () => {
-        const nfitems = await prisma.tbNfitens.findMany()
+        const nfitems = await prisma.tbnfitens.findMany()
         return nfitems
     })
     
@@ -1030,21 +1030,21 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
     
         //Verifica se existe id do local
-        const conferenf = await prisma.tbNf.findUnique({
+        const conferenf = await prisma.tbnf.findUnique({
             where: { idnf: idnf },
             });
     
             //Verifica se existe id do produto
-        const conferemovimento = await prisma.tbMovimentos.findUnique({
+        const conferemovimento = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
             });
 
-        const confereproduto = await prisma.tbProdutos.findUnique({
+        const confereproduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
             });
         
         if(conferenf && conferemovimento && confereproduto){
-            const newNfitem = await prisma.tbNfitens.create({
+            const newNfitem = await prisma.tbnfitens.create({
                 data: {
                     idnf,
                     idmovimento,
@@ -1085,21 +1085,21 @@ export async function AppRoutes(server:FastifyInstance){
         } = putBody.parse(request.body)
     
         //Verifica se existe id de local
-        const conferenf = await prisma.tbNf.findUnique({
+        const conferenf = await prisma.tbnf.findUnique({
             where: { idnf: idnf },
             });
     
         //Verifica se existe id do produto
-        const conferemovimento = await prisma.tbMovimentos.findUnique({
+        const conferemovimento = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
             });
 
-        const confereproduto = await prisma.tbProdutos.findUnique({
+        const confereproduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
             });
         
         if(conferenf && conferemovimento && confereproduto){
-            const itemUpdate = await prisma.tbNfitens.updateMany({
+            const itemUpdate = await prisma.tbnfitens.updateMany({
                 where: {
                     idnf: idnf,
                     seqitem: seqitem,
@@ -1133,7 +1133,7 @@ export async function AppRoutes(server:FastifyInstance){
         const seqItem = Number(seqitem)
         const idProduto = Number(idproduto)
     
-        const itemApagado = await prisma.tbNfitens.delete({
+        const itemApagado = await prisma.tbnfitens.delete({
             where: {
                 idnf_seqitem_idproduto:{
                     idnf: nfid,
@@ -1151,7 +1151,7 @@ export async function AppRoutes(server:FastifyInstance){
 
     
     server.get('/composicao', async () => {
-        const composicoes = await prisma.tbProdcomposicao.findMany()
+        const composicoes = await prisma.tbprodcomposicao.findMany()
         return composicoes
     })
     
@@ -1170,7 +1170,7 @@ export async function AppRoutes(server:FastifyInstance){
         
         const produtos = [idproduto, idprodutocomp]
             //Verifica se existe id do produto
-        const confereprodutos = await prisma.tbProdutos.findMany({
+        const confereprodutos = await prisma.tbprodutos.findMany({
             where: {
                 idproduto: {
                     in: produtos
@@ -1179,7 +1179,7 @@ export async function AppRoutes(server:FastifyInstance){
             });
         
         if(confereprodutos.length === produtos.length){
-            const newComp = await prisma.tbProdcomposicao.create({
+            const newComp = await prisma.tbprodcomposicao.create({
                 data: {
                     idproduto: idproduto,
                     idprodutocomp: idprodutocomp,
@@ -1212,7 +1212,7 @@ export async function AppRoutes(server:FastifyInstance){
         const produtos = [idproduto, idprodutocomp]
 
         //Verifica se existe id do produto
-        const confereprodutos = await prisma.tbProdutos.findMany({
+        const confereprodutos = await prisma.tbprodutos.findMany({
             where: {
                 idproduto: {
                     in: produtos
@@ -1221,7 +1221,7 @@ export async function AppRoutes(server:FastifyInstance){
             });
         
         if(confereprodutos.length === produtos.length){
-            const compUpdate = await prisma.tbProdcomposicao.updateMany({
+            const compUpdate = await prisma.tbprodcomposicao.updateMany({
                 where: {
                     idcomp: idcomp,
                     idproduto: idproduto,
@@ -1252,7 +1252,7 @@ export async function AppRoutes(server:FastifyInstance){
         const prodId = Number(idproduto)
         const prodcompId = Number(idprodutocomp)
     
-        const composicaoApagada = await prisma.tbProdcomposicao.delete({
+        const composicaoApagada = await prisma.tbprodcomposicao.delete({
             where: {
                 idcomp_idproduto_idprodutocomp: {
                     idcomp: compId,
