@@ -1,11 +1,13 @@
 import {FastifyInstance} from 'fastify'
-import {z} from 'zod'
+import {number, z} from 'zod'
 import {prisma} from './lib/prisma'
 
 export async function AppRoutes(server:FastifyInstance){
 
     // CRUD Fornecedor
-
+    async function baixaEstoque(idproduto: number, quantidade: number) {
+        await fetch
+    }
     server.get('/fornecedor', async () => {        
         const fornecedor = await prisma.tbfornecedores.findMany()
     
@@ -649,7 +651,6 @@ export async function AppRoutes(server:FastifyInstance){
                     dtinc
                 },
             })
-    
             return newMovimento
         }
         else {
@@ -750,16 +751,16 @@ export async function AppRoutes(server:FastifyInstance){
           });
 
         //Verifica se existe id do produto
-        const confereProduto = await prisma.tbprodutos.findUnique({
+        const dadosProduto = await prisma.tbprodutos.findUnique({
             where: { idproduto: idproduto },
           });
 
         //verififca se existe id da Tmovimentos
-        const confereMovimentoId = await prisma.tbmovimentos.findUnique({
+        const dadosMovimento = await prisma.tbmovimentos.findUnique({
             where: { idmovimento: idmovimento },
           });
 
-        if(confereLocal && confereProduto && confereMovimentoId){
+        if(confereLocal && dadosProduto && dadosMovimento){
             const newMovimentoItens = await prisma.tbmovitens.create({
                 data: {
                     seqitem,
@@ -770,7 +771,38 @@ export async function AppRoutes(server:FastifyInstance){
                     quantidade
                 },
             })
-    
+            //Quantidade de estoque atual do produto
+            const dadosEstoque = await prisma.tbestoque.findUnique({
+                where: { idestoque_idproduto: {idestoque: 1, idproduto: idproduto} },
+            });
+            if (dadosMovimento.tipmov === 'EN') {
+                // Se for uma entrada, adicione a quantidade ao estoque
+                await prisma.tbestoque.updateMany({
+                where: { idproduto: idproduto },
+                data: {
+                    quantidade: {
+                    increment: quantidade,
+                    },
+                },
+                });
+            } else if (dadosMovimento.tipmov === 'SA') {
+                // Se for uma saída, subtraia a quantidade do estoque
+                //Verifica se a quantidade passada é valida
+                if((Number(dadosProduto.quantminima) >= Number(dadosEstoque?.quantidade) - quantidade) && (Number(dadosEstoque?.quantidade) >= quantidade))
+                {
+                    await prisma.tbestoque.updateMany({
+                        where: { idproduto: idproduto  },
+                        data: {
+                            quantidade: {
+                            decrement: quantidade,
+                            },
+                        },
+                    });
+                }
+                else {
+                    return(`Quantidade inválida`)
+                }
+            }
             return newMovimentoItens
         }
         else{
