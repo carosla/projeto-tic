@@ -5,9 +5,6 @@ import {prisma} from './lib/prisma'
 export async function AppRoutes(server:FastifyInstance){
 
     // CRUD Fornecedor
-    async function baixaEstoque(idproduto: number, quantidade: number) {
-        await fetch
-    }
     server.get('/fornecedor', async () => {        
         const fornecedor = await prisma.tbfornecedores.findMany()
     
