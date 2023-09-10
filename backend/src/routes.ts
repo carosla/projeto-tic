@@ -1,5 +1,5 @@
 import {FastifyInstance} from 'fastify'
-import {number, z} from 'zod'
+import {z} from 'zod'
 import {prisma} from './lib/prisma'
 
 export async function AppRoutes(server:FastifyInstance){
