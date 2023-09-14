@@ -58,7 +58,7 @@ export default function Login() {
                         <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 400, minWidth: 300}}>
                             <Grid container alignItems="center" direction="column">
                                 <img 
-                                    src="https://logospng.org/download/puma/logo-puma-icon-512.png" 
+                                    src="logo.png" 
                                     width={100} 
                                     alt="logo"
                                 />
