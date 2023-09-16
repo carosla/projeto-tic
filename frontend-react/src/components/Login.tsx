@@ -1,4 +1,4 @@
-import { Grid, TextField } from "@mui/material"
+import { Button, Grid, TextField } from "@mui/material"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
@@ -56,15 +56,28 @@ export default function Login() {
                 <Grid container item xs={12} sm={6} alignItems="center" direction="column" justifyContent="space-between" style={{padding: 10}}>
                     <div />
                         <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 400, minWidth: 300}}>
+                        <div>
+                        <h2 style={{color:"#000000", fontSize: 30, fontFamily:"Lucida Sans"}}>
+                            Bem vindo!
+                        </h2>
+                        <h3 style={{color:"#000000", marginBottom:20, marginTop:5, fontFamily:"Verdana"}}>
+                            Digite suas credenciais para acessar o site.
+                        </h3>
+                    </div>
                             <Grid container alignItems="center" direction="column">
-                                <img 
-                                    src="logo.png" 
-                                    width={100} 
+                                <img
+                                    src="padlock.png" 
+                                    width={'8%'} 
                                     alt="logo"
                                 />
                             </Grid>
                             <TextField label="Login" margin="normal" />
-                            <TextField label="Senha" margin="normal" />
+                            <TextField label="Senha" margin="normal" type="password" />
+                            <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 400, minWidth: 300, marginTop: 15, boxShadow: '0px 2px 9px #6c63ff'}}>
+                            <Button>
+                                Entrar
+                            </Button>
+                        </div>
                         </div>
                     <div />
                 </Grid>
